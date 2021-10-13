@@ -1,0 +1,8 @@
+#AuthType Basic
+#AuthName mizuno
+#AuthUserFile /home/httpd/.pw/mizunor
+#require valid-user
+order deny,allow
+deny from all
+allow from 157.110.48.0/255.255.254.0
+allow from 127.0.0.1/255.255.255.255

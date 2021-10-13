@@ -1,0 +1,12 @@
+#!/usr/bin/ruby
+files = Dir.entries('.')
+files.sort.each do |f|
+  if f =~ /^([a-z]+)(\d+)(([a-z])+)?\.ogg/
+    num = $2.to_i
+    if $3 or num < 10
+      cmd = sprintf "mv #{f} %s%02d.ogg", $1, num
+      system(cmd)
+    end
+  end
+end
+

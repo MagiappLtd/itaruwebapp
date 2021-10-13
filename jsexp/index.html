@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<!-- JavaScript心理学実験 -->
+
+<html>
+<head>
+<meta charset="utf-8">
+<style type="text/css">
+<!--
+h1 { text-align: center; }
+body { background-color: #FFFFFF; }
+td { background-color: #F4FFFA;
+  padding: 2px;
+  border: 1px #E4EFEA solid;}
+td.num { text-align: right; }
+table { margin-left: auto;
+	margin-right: auto;
+	border: 1px #E4EFEA solid;
+	border-spacing: 0px;
+	background-color: #F4FFFA;
+	}
+-->
+</style>
+<title id="title"></title>
+</head>
+
+<noscript>
+<p>このページはJavaScriptを使用しています。JavaScriptの使えるブラウザを使用し、有効に設定してください。</p>
+</noscript>
+
+<script language="JavaScript" type="text/javascript">
+<!--
+// 実験名の配列
+// ディレクトリ名は大文字を小文字に、空白を"_"に変換して作る
+// 同一の実験名でデザインが複数ある場合は、デザイン名の配列との配列にする
+var EXPERIMENTS = [
+    ["Ponzo", ["between", "", "within"]],
+    ["Muller-Lyer", ["between", "mixed", "within"]],
+    ["Poggendorff", ["between", "mixed", "within"]],
+    "Mental Rotation",
+    "Sperling",
+    "False Memory",
+    "Stroop",
+    ["Memory Span", ["between", "", "within"]],
+    "Levels of Processing",
+    "Serial Position Effect",
+    "Posner",
+    "Semantic Memory",
+    "Priming",
+    ["Attentional Blink", ["", "mixed", "within"]],
+    "Sternberg",
+    "Simple RT"
+];
+
+var EXPERIMENT = "exp";
+var DATA = "data";
+var TITLE = {};
+TITLE[EXPERIMENT] = "実験メニュー";
+TITLE[DATA] = "データ取得メニュー";
+
+var open_fullscreen = function (url) {
+    window.open(url, "", "left=0,top=0,width=" + screen.width + ",height=" + screen.height + "fullscreen=yes,scrollbars=no,resizable=no,location=no,toolbar=no,directories=no,status=no,menubar=no");
+};
+
+// 実験メニューを表示する
+var make_menu = function (type) {
+    var string = "<table>\n";
+    var replace = function (str) {
+	return str.toLowerCase().replace(/ /g, "_");
+    }
+    var link = function (name, option) {
+	var dir;
+
+	if (option) {
+	    dir = replace(name + "_" + option);
+	    name = option;
+	} else {
+	    dir = replace(name);
+	}
+	if (type === EXPERIMENT) {
+	    return "<a href='javascript:void(0);' onclick=\"open_fullscreen('" + dir + "/index.html')\">" + name + "</a>";
+	} else {
+	    return "<a href='DATA/" + dir + "/" + dir + ".txt' download='" + dir + ".txt'>" + name + "</a>"
+	}
+    }
+
+    EXPERIMENTS.forEach(function (experiment, i) {
+        var dir;
+	var object_type = Object.prototype.toString.call(experiment);
+
+	if (object_type === "[object String]") {
+            string += "<tr><td class='num'>" + (i + 1) + "</td><td class='title'>";
+	    string += link(experiment);
+            string += "</td></tr>\n";
+	} else if (object_type === "[object Array]" && experiment.length > 1) {
+	    dir = replace(experiment[0]);
+            string += "<tr><td class='num'>" + (i + 1) + "</td><td class='title'>";
+	    string += experiment[0] + "&nbsp;</td>";
+	    experiment[1].forEach(function (option) {
+		if (option === "") {
+		    string += "<td></td>";
+		} else {
+		    string += "<td>" + link(experiment[0], option) + "</td>";
+		}
+	    });
+            string += "</tr>\n";
+	} else {
+	    return;
+	}
+    });
+    string += "</table>\n";
+    string += "<center><p class='link'>";
+    string += "<a href='javascript:void(0);' onclick='set_menu(";
+    if (type === EXPERIMENT) {
+        string += "DATA)'>データ取得メニューへ</a></center>\n";
+    } else {
+        string += "EXPERIMENT)'>実験メニューへ</a></center>\n";
+    }
+    return string;
+};
+
+var MENU = {};
+MENU[EXPERIMENT] = make_menu(EXPERIMENT);
+MENU[DATA] = make_menu(DATA);
+
+var set_menu = function (type) {
+    document.getElementById("title").innerHTML = TITLE[type];
+    document.getElementById("header").innerHTML = TITLE[type];
+    document.getElementById("menu").innerHTML = MENU[type];
+};
+
+//->
+</script>
+
+<body onload="set_menu(EXPERIMENT);">
+<h1 id="header"></h1>
+<div id="menu"></div>
+</center>
+</body>
+</html>
